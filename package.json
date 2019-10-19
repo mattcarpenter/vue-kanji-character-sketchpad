@@ -5,11 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-bundle": "vue-cli-service build --target lib --name vue-kanji-component-sketchpad ./src/App.vue",
+    "build-bundle": "vue-cli-service build --target lib --name vue-kanji-character-sketchpad ./src/App.vue",
     "lint": "vue-cli-service lint",
     "test": "jest"
   },
-  "main": "./dist/vue-kanji-component-sketchpad.common.js",
+  "main": "./dist/vue-kanji-character-sketchpad.common.js",
   "files": [
     "dist/*",
     "src/*",

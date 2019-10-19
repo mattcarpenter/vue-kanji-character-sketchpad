@@ -1,22 +1,34 @@
 <template>
-  <div id="app">
+  <div class="sketchpad-container" v-bind:style="containerStyle">
     Hello World
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sketchpad'
+  name: 'kanji-character-sketchpad',
+  props: {
+    maxWidth: {
+      type: Number,
+      required: false
+    }
+  },
+  computed: {
+    containerStyle: function () {
+      return {
+        maxWidth: (this.$props.maxWidth || 500) + 'px'
+      }
+    }
+  },
+  mounted: function () {
+
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.sketchpad-container {
+  border: solid 1px #CCCCCC;
+  background-color: #EFEFEF;
 }
 </style>
