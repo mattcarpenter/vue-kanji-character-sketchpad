@@ -5,6 +5,9 @@
 </template>
 
 <script>
+const DEFAULT_MAX_WIDTH = 500
+const DEFAULT_HEIGHT = 500
+
 export default {
   name: 'kanji-character-sketchpad',
   props: {
@@ -13,10 +16,16 @@ export default {
       required: false
     }
   },
+  data: function () {
+    return {
+      height: null
+    }
+  },
   computed: {
     containerStyle: function () {
       return {
-        maxWidth: (this.$props.maxWidth || 500) + 'px'
+        maxWidth: (this.$props.maxWidth || DEFAULT_MAX_WIDTH) + 'px',
+        height: (this.$data.height || DEFAULT_HEIGHT) + 'px'
       }
     }
   },
