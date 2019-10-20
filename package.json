@@ -19,13 +19,13 @@
   "dependencies": {
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-jest": "^24.9.0",
-    "cheerio": "^1.0.0-rc.3",
     "core-js": "^3.1.2",
     "jest": "^24.9.0",
     "jest-vue-preprocessor": "^1.7.0",
     "turf": "^3.0.14",
     "typescript": "^3.6.4",
     "vue": "^2.6.10",
+    "vue-svg-sketch": "^1.0.0",
     "vue-test-utils": "^1.0.0-beta.11"
   },
   "devDependencies": {

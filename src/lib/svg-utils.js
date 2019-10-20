@@ -1,8 +1,6 @@
-const cheerio = require('cheerio')
-
 const XMLNS = "http://www.w3.org/2000/svg"
-const PATH_SAMPLE_FACTOR = 10
-const MIN_SAMPLE_LENGTH = 10
+const PATH_SAMPLE_FACTOR = 20
+const MIN_SAMPLE_LENGTH = 20
 
 module.exports = {
   xmlToPathPoints: xmlToPathPoints,
@@ -14,11 +12,11 @@ module.exports = {
 function xmlToPathPoints(xml) {
   const paths = []
 
-  cheerio
-    .load(xml)('path')
-    .each((i, e) => {
-      paths.push(svgPathDataToPoints(e.attribs.d))
-    });
+  const container = document.createElement('div')
+  container.innerHTML = xml
+  container.querySelectorAll('path').forEach(e => {
+    paths.push(svgPathDataToPoints(e.attributes.d.value))
+  });
 
   return paths
 }
@@ -66,7 +64,7 @@ function convertPointArraysToSVG(paths) {
       "stroke":"#000000",
       "path":"M",
       "stroke-opacity":1,
-      "stroke-width":5,
+      "stroke-width":15,
       "stroke-linecap":"round",
       "stroke-linejoin":"round",
       "transform":[],
@@ -85,7 +83,7 @@ function convertSVGtoXML(data) {
   let svgXML = '<svg>'
  
   for(i=0; i < data.length; i++) {
-    svgXML += '\n<path fill="none" stroke-opacity="1" stroke="#000000" stroke-linecap="round" stroke-width="5" stroke-linejoin="round" type="path" d="M '
+    svgXML += '\n<path fill="none" stroke-opacity="1" stroke="#000000" stroke-linecap="round" stroke-width="20" stroke-linejoin="round" type="path" d="M '
     splitPath = data[i].path.slice(1).split('L')
     for(j=0; j < splitPath.length; j++) {
       point = splitPath[j].split(',')
