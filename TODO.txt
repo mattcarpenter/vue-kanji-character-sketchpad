@@ -1,0 +1,5 @@
+- add more points to guide
+- overflow show
+- make guide more pretty (borders, stroke width, etc..)
+- show/hide guide via props
+- figure out how to indicate stroke order
