@@ -8,6 +8,13 @@
                 :key="dimensions.width"
                 size="20"
                 color="#000000"></svg-sketch>
+    <ul class="sketchpad-guide-stroke-labels">
+      <li v-for="(value, index) in strokes"
+          v-bind:key="index"
+          :style="{position:'absolute',left:value[0].x + 'px', top: value[0].y + 'px'}">
+        {{ index + 1 }}
+      </li> 
+    </ul>
     <div class="sketchpad-guide" ref="sketchpad-guide"></div>
   </div>
 </template>
@@ -48,7 +55,8 @@ export default {
     return {
       height: null,
       width: null,
-      disabled: false
+      disabled: false,
+      strokes: []
     }
   },
   computed: {
@@ -76,13 +84,14 @@ export default {
         const sketchpadWidth = sketchpadContainerEl.clientWidth
         const sketchpadHeight =  dimensions.height * sketchpadWidth / dimensions.width
         const scaledSvgXml = kanji.getXml(sketchpadWidth, sketchpadHeight)
-
+        const scaledStrokes = kanji.getScaledStrokes(sketchpadWidth, sketchpadHeight)
         // Load the guide SVG into the DOM
         this.$refs['sketchpad-guide'].innerHTML = scaledSvgXml
 
         // Adjust the container to fit the character nicely
         this.$set(this, 'height', sketchpadHeight)
         this.$set(this, 'width', sketchpadWidth)
+        this.$set(this, 'strokes', scaledStrokes)
       }
     }
   }
@@ -96,12 +105,16 @@ export default {
   position: relative;
 }
 
-.sketchpad-guide {
+.sketchpad-guide, .sketchpad-guide-stroke-labels {
   position: absolute;
   top: 0px;
   bottom: 0px;
   left: 0px;
   right: 0px;
+}
+
+.sketchpad-guide-stroke-labels {
+  list-style-type: none;
 }
 
 .sketchpad-guide > svg {
