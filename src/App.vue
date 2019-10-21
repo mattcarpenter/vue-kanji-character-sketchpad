@@ -92,6 +92,14 @@ export default {
         this.$set(this, 'height', sketchpadHeight)
         this.$set(this, 'width', sketchpadWidth)
         this.$set(this, 'strokes', scaledStrokes)
+
+        // animation test
+        const stroke = this.$refs['sketchpad-guide'].querySelectorAll('path')[0]
+        const length = stroke.getTotalLength()
+
+        stroke.style['stroke-dashoffset'] = length
+        stroke.style['stroke-dasharray'] = length
+        stroke.classList.add('run-animation')
       }
     }
   }
@@ -134,5 +142,15 @@ export default {
 
 .svg-sketch > svg {
   overflow: visible
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.run-animation {
+  animation: dash 0.5s ease-out forwards;
 }
 </style>
