@@ -59,6 +59,7 @@ export default {
           stroke.style['stroke-dashoffset'] = strokeLength
           stroke.style['stroke-dasharray'] = strokeLength
           stroke.classList.add('run-animation')
+          stroke.classList.remove('hide')
         }, timeOffset)
         timeOffset += STROKE_ANIMATION_DURATION_MILLIS
       })
@@ -150,6 +151,10 @@ export default {
 
 .svg-sketch > svg {
   overflow: visible
+}
+
+.hide {
+  display: none;
 }
 
 @keyframes dash {
