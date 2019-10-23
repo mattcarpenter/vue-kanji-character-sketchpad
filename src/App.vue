@@ -26,6 +26,7 @@ import svgSketch from 'vue-svg-sketch'
 
 const DEFAULT_MAX_WIDTH = 500
 const DEFAULT_HEIGHT = 500
+const STROKE_ANIMATION_DURATION_MILLIS = 500
 
 export default {
   name: 'kanji-character-sketchpad',
@@ -49,6 +50,18 @@ export default {
   methods: {
     onDrawStop() {
       console.log(this.$refs.sketch.getJSON()) //eslint-disable-line
+    },
+    animateGuideStrokes() {
+      let timeOffset = 0;
+      this.$refs['sketchpad-guide'].querySelectorAll('path').forEach(stroke => {
+        let strokeLength = stroke.getTotalLength()
+        setTimeout(() => {
+          stroke.style['stroke-dashoffset'] = strokeLength
+          stroke.style['stroke-dasharray'] = strokeLength
+          stroke.classList.add('run-animation')
+        }, timeOffset)
+        timeOffset += STROKE_ANIMATION_DURATION_MILLIS
+      })
     }
   },
   data: function () {
@@ -94,12 +107,7 @@ export default {
         this.$set(this, 'strokes', scaledStrokes)
 
         // animation test
-        const stroke = this.$refs['sketchpad-guide'].querySelectorAll('path')[0]
-        const length = stroke.getTotalLength()
-
-        stroke.style['stroke-dashoffset'] = length
-        stroke.style['stroke-dasharray'] = length
-        stroke.classList.add('run-animation')
+        this.animateGuideStrokes()
       }
     }
   }
