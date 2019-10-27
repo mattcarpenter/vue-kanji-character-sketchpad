@@ -24,6 +24,8 @@ import { fromXml } from './lib/kanji'
 import urlSvgLoader from './lib/url-svg-loader'
 import svgSketch from 'vue-svg-sketch'
 
+const svgUtils = require('./lib/svg-utils')
+
 const DEFAULT_MAX_WIDTH = 500
 const DEFAULT_HEIGHT = 500
 const STROKE_ANIMATION_DURATION_MILLIS = 500
@@ -49,7 +51,9 @@ export default {
   },
   methods: {
     onDrawStop() {
-      console.log(this.$refs.sketch.getJSON()) //eslint-disable-line
+      const kanji = this.kanji //eslint-disable-line
+      const sketchPaths = svgUtils.svgIllustrationDataToPathPoints(this.$refs.sketch.getJSON())
+      console.log(kanji.compareWithStrokes(sketchPaths, this.width, this.height)) //eslint-disable-line
     },
     animateGuideStrokes() {
       let timeOffset = 0;
@@ -70,7 +74,8 @@ export default {
       height: null,
       width: null,
       disabled: false,
-      strokes: []
+      strokes: [],
+      kanji: null
     }
   },
   computed: {
@@ -106,6 +111,7 @@ export default {
         this.$set(this, 'height', sketchpadHeight)
         this.$set(this, 'width', sketchpadWidth)
         this.$set(this, 'strokes', scaledStrokes)
+        this.$set(this, 'kanji', kanji)
 
         // animation test
         this.animateGuideStrokes()

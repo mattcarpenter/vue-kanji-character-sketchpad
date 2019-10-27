@@ -6,7 +6,8 @@ module.exports = {
   xmlToPathPoints: xmlToPathPoints,
   jsonToPathPoints: jsonToPathPoints,
   convertPointArraysToSVG: convertPointArraysToSVG,
-  convertPointArraysToXML: convertPointArraysToXML
+  convertPointArraysToXML: convertPointArraysToXML,
+  svgIllustrationDataToPathPoints: svgIllustrationDataToPathPoints
 }
 
 function xmlToPathPoints(xml) {
@@ -23,12 +24,15 @@ function xmlToPathPoints(xml) {
 
 function jsonToPathPoints(json) {
   const paths = [];
-
   JSON.parse(json).forEach(path => {
     paths.push(svgPathDataToPoints(path.path))
   })
 
   return paths
+}
+
+function svgIllustrationDataToPathPoints(data) {
+  return data.paths.map(p => svgPathDataToPoints(p.d))
 }
 
 function svgPathDataToPoints(svgPathData) {
@@ -83,7 +87,7 @@ function convertSVGtoXML(data) {
   let svgXML = '<svg>'
  
   for(i=0; i < data.length; i++) {
-    svgXML += '\n<path fill="none" class="hide" stroke-opacity="1" stroke="#000000" stroke-linecap="round" stroke-width="20" stroke-linejoin="round" type="path" d="M '
+    svgXML += '\n<path fill="none" class="hide" stroke-opacity="1" stroke="#AAAAAA" stroke-linecap="round" stroke-width="20" stroke-linejoin="round" type="path" d="M '
     splitPath = data[i].path.slice(1).split('L')
     for(j=0; j < splitPath.length; j++) {
       point = splitPath[j].split(',')
