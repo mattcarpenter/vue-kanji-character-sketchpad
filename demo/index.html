@@ -17,7 +17,8 @@
         <div class="wrapper">
           <kanji-character-sketchpad
             svg-repository-base-url="https://d1y2ilnnh4c7kl.cloudfront.net/"
-            character="下">
+            character="下"
+            @stroke="stroke">
           </kanji-character-sketchpad>
         </div>
       </template>
@@ -27,6 +28,11 @@
         name: 'demo',
         components: {
           'kanji-character-sketchpad': window['vue-kanji-character-sketchpad']
+        },
+        methods: {
+          stroke: function (data) {
+            console.log(data)
+          }
         }
       }
       const Ctor = Vue.extend(Main)

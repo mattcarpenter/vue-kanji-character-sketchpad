@@ -11,7 +11,8 @@
     <ul class="sketchpad-guide-stroke-labels">
       <li v-for="(value, index) in strokes"
           v-bind:key="index"
-          :style="{position:'absolute',left:value[0].x + 'px', top: value[0].y + 'px'}">
+          :style="{position:'absolute',left:value[0].x + 'px', top: value[0].y + 'px'}"
+          class="noselect">
         {{ index + 1 }}
       </li> 
     </ul>
@@ -53,7 +54,7 @@ export default {
     onDrawStop() {
       const kanji = this.kanji //eslint-disable-line
       const sketchPaths = svgUtils.svgIllustrationDataToPathPoints(this.$refs.sketch.getJSON())
-      console.log(kanji.compareWithStrokes(sketchPaths, this.width, this.height)) //eslint-disable-line
+      this.$emit('stroke', kanji.compareWithStrokes(sketchPaths, this.width, this.height))
     },
     animateGuideStrokes() {
       let timeOffset = 0;
@@ -138,6 +139,9 @@ export default {
 
 .sketchpad-guide-stroke-labels {
   list-style-type: none;
+  pointer-events: none;
+  color: #444;
+  z-index: 1;
 }
 
 .sketchpad-guide > svg {
@@ -171,5 +175,15 @@ export default {
 
 .run-animation {
   animation: dash 0.5s ease-out forwards;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }
 </style>
