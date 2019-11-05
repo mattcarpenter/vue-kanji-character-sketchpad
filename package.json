@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name vue-kanji-character-sketchpad ./src/App.vue",
     "lint": "vue-cli-service lint",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "npm run build"
   },
   "main": "./dist/vue-kanji-character-sketchpad.common.js",
   "files": [
