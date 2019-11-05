@@ -3,3 +3,8 @@
     padding: 50px;
     border: solid 1px #CCC;
 }
+
+.sketchpad-container {
+    background-color: #FEFEFE;
+    border: solid 1px #D0D0D0;
+}
