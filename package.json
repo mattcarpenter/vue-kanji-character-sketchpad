@@ -25,7 +25,7 @@
     "turf": "^3.0.14",
     "typescript": "^3.6.4",
     "vue": "^2.6.10",
-    "vue-svg-sketch": "^1.0.0",
+    "vue-svg-sketch": "mattcarpenter/vue-svg-sketch#fix-draw-stop",
     "vue-test-utils": "^1.0.0-beta.11"
   },
   "devDependencies": {

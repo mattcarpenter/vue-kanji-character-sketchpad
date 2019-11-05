@@ -2,9 +2,9 @@ const svgUtils = require('./svg-utils')
 const hausdorff = require('./hausdorff')
 const turf = require('turf')
 
-// e.g.: hausdorff distance of 50px tolerated per every 500px of width
+// i.e.: hausdorff distance of 75px tolerated for every 500px of sketchpad width
 const TOLERANCE_WIDTH = 500
-const TOLERANCE = 50
+const TOLERANCE = 75
 
 export const fromXml = (xml) => {
   return new Kanji(xml)
@@ -52,9 +52,9 @@ Kanji.prototype.getDimensions = function () {
   }
 }
 
-Kanji.prototype.getXml = function (width, height) {
+Kanji.prototype.getXml = function (width, height, guideStrokeColor) {
   let scaledStrokes = this.getScaledStrokes(width, height)
-  return svgUtils.convertPointArraysToXML(scaledStrokes)
+  return svgUtils.convertPointArraysToXML(scaledStrokes, guideStrokeColor)
 }
 
 Kanji.prototype.getScaledStrokes = function (width, height) {

@@ -7,8 +7,8 @@
                 :height="dimensions.height"
                 :key="dimensions.width"
                 size="20"
-                color="#000000"></svg-sketch>
-    <ul class="sketchpad-guide-stroke-labels">
+                :color="strokeColor"></svg-sketch>
+    <ul class="sketchpad-guide-stroke-labels" v-bind:style="{display: showStrokeNumbers ? 'block' : 'none'}">
       <li v-for="(value, index) in strokes"
           v-bind:key="index"
           :style="{position:'absolute',left:value[0].x + 'px', top: value[0].y + 'px'}"
@@ -16,7 +16,7 @@
         {{ index + 1 }}
       </li> 
     </ul>
-    <div class="sketchpad-guide" ref="sketchpad-guide"></div>
+    <div class="sketchpad-guide" ref="sketchpad-guide" v-bind:style="{display: showGuide ? 'block' : 'none'}"></div>
   </div>
 </template>
 
@@ -48,13 +48,38 @@ export default {
     character: {
       type: String,
       required: false
+    },
+    showGuide: {
+      type: Boolean,
+      required: false
+    },
+    showStrokeNumbers: {
+      type: Boolean,
+      required: false
+    },
+    guideStrokeColor: {
+      type: String,
+      required: false,
+      default: '#D0D0D0'
+    },
+    strokeColor: {
+      type: String,
+      required: false,
+      default: '#444'
     }
   },
   methods: {
+    reset() {
+      this.$refs.sketch.clean()
+    },
     onDrawStop() {
-      const kanji = this.kanji //eslint-disable-line
       const sketchPaths = svgUtils.svgIllustrationDataToPathPoints(this.$refs.sketch.getJSON())
-      this.$emit('stroke', kanji.compareWithStrokes(sketchPaths, this.width, this.height))
+
+      if (!this.kanji || !sketchPaths.length) {
+        return
+      }
+
+      this.$emit('stroke', this.kanji.compareWithStrokes(sketchPaths, this.width, this.height))
     },
     animateGuideStrokes() {
       let timeOffset = 0;
@@ -103,8 +128,9 @@ export default {
         const sketchpadContainerEl = this.$refs['sketchpad-container']
         const sketchpadWidth = sketchpadContainerEl.clientWidth
         const sketchpadHeight =  dimensions.height * sketchpadWidth / dimensions.width
-        const scaledSvgXml = kanji.getXml(sketchpadWidth, sketchpadHeight)
+        const scaledSvgXml = kanji.getXml(sketchpadWidth, sketchpadHeight, this.$props.guideStrokeColor)
         const scaledStrokes = kanji.getScaledStrokes(sketchpadWidth, sketchpadHeight)
+
         // Load the guide SVG into the DOM
         this.$refs['sketchpad-guide'].innerHTML = scaledSvgXml
 
@@ -114,7 +140,6 @@ export default {
         this.$set(this, 'strokes', scaledStrokes)
         this.$set(this, 'kanji', kanji)
 
-        // animation test
         this.animateGuideStrokes()
       }
     }
@@ -124,8 +149,6 @@ export default {
 
 <style>
 .sketchpad-container {
-  border: dashed 1px #CFCFCF;
-  background-color: #FCFCFC;
   position: relative;
 }
 
@@ -140,7 +163,6 @@ export default {
 .sketchpad-guide-stroke-labels {
   list-style-type: none;
   pointer-events: none;
-  color: #444;
   z-index: 1;
 }
 
@@ -174,7 +196,7 @@ export default {
 }
 
 .run-animation {
-  animation: dash 0.5s ease-out forwards;
+  animation: dash 0.35s ease-out forwards;
 }
 
 .noselect {

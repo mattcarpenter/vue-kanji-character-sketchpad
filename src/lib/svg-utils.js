@@ -58,14 +58,14 @@ function svgPathDataToPoints(svgPathData) {
   return points
 }
 
-function convertPointArraysToSVG(paths) {
+function convertPointArraysToSVG(paths, strokeColor) {
   let result = []
   let i, j
   
   for (i=0; i < paths.length; i++) {
     result[i] = {
       "fill":"none",
-      "stroke":"#000000",
+      "stroke": strokeColor,
       "path":"M",
       "stroke-opacity":1,
       "stroke-width":15,
@@ -87,7 +87,7 @@ function convertSVGtoXML(data) {
   let svgXML = '<svg>'
  
   for(i=0; i < data.length; i++) {
-    svgXML += '\n<path fill="none" class="hide" stroke-opacity="1" stroke="#AAAAAA" stroke-linecap="round" stroke-width="20" stroke-linejoin="round" type="path" d="M '
+    svgXML += '\n<path fill="none" class="hide" stroke-opacity="1" stroke="' + data[i].stroke + '" stroke-linecap="round" stroke-width="20" stroke-linejoin="round" type="path" d="M '
     splitPath = data[i].path.slice(1).split('L')
     for(j=0; j < splitPath.length; j++) {
       point = splitPath[j].split(',')
@@ -99,7 +99,7 @@ function convertSVGtoXML(data) {
   return svgXML
 }
 
-function convertPointArraysToXML(pointArrays) {
-  let svg = convertPointArraysToSVG(pointArrays)
+function convertPointArraysToXML(pointArrays, strokeColor) {
+  let svg = convertPointArraysToSVG(pointArrays, strokeColor)
   return convertSVGtoXML(svg)
 }

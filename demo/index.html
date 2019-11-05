@@ -6,6 +6,12 @@
     <title>vue-kanji-character-sketchpad</title>
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="../dist/vue-kanji-character-sketchpad.css">
+    <style type="text/css">
+      .sketchpad-container {
+        background-color: #FEFEFE;
+        border: solid 1px #D0D0D0;
+      }
+    </style>
   </head>
 
   <body>
@@ -18,8 +24,13 @@
           <kanji-character-sketchpad
             svg-repository-base-url="https://d1y2ilnnh4c7kl.cloudfront.net/"
             character="下"
-            @stroke="stroke">
+            @stroke="stroke"
+            :show-guide="true"
+            guide-stroke-color="#D0D0D0"
+            stroke-color="#444"
+            ref="sketchpad">
           </kanji-character-sketchpad>
+          <button @click="reset">Reset</button>
         </div>
       </template>
     </div>
@@ -32,6 +43,9 @@
         methods: {
           stroke: function (data) {
             console.log(data)
+          },
+          reset: function () {
+            this.$refs.sketchpad.reset()
           }
         }
       }
