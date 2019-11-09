@@ -7,7 +7,8 @@ module.exports = {
   jsonToPathPoints: jsonToPathPoints,
   convertPointArraysToSVG: convertPointArraysToSVG,
   convertPointArraysToXML: convertPointArraysToXML,
-  svgIllustrationDataToPathPoints: svgIllustrationDataToPathPoints
+  svgIllustrationDataToPathPoints: svgIllustrationDataToPathPoints,
+  dimensionsFromXml: dimensionsFromXml
 }
 
 function xmlToPathPoints(xml) {
@@ -20,6 +21,16 @@ function xmlToPathPoints(xml) {
   });
 
   return paths
+}
+
+function dimensionsFromXml(xml) {
+  const container = document.createElement('div')
+  container.innerHTML = xml
+  const svgEl = container.querySelector('svg')
+  return {
+    width: parseInt(svgEl.attributes.width.value, 10),
+    height: parseInt(svgEl.attributes.height.value, 10)
+  }
 }
 
 function jsonToPathPoints(json) {

@@ -12,11 +12,12 @@ export const fromXml = (xml) => {
 
 function Kanji(xml) {
   this.strokes = svgUtils.xmlToPathPoints(xml)
+  this.originalDimensions = svgUtils.dimensionsFromXml(xml)
   this.trimmedStrokes = []
-  let minX
-  let minY
+  //let minX
+  //let minY
 
-  this.strokes.forEach(stroke => {
+  /*this.strokes.forEach(stroke => {
     stroke.forEach(point => {
       minX = typeof minX === 'undefined' ? point.x : Math.min(point.x, minX)
       minY = typeof minY === 'undefined' ? point.y : Math.min(point.y, minY)
@@ -29,15 +30,18 @@ function Kanji(xml) {
       this.trimmedStrokes[strokeIndex][pointIndex].x -= minX
       this.trimmedStrokes[strokeIndex][pointIndex].y -= minY
     })
-  })
+  })*/
 }
 
 Kanji.prototype.getStrokes = function ()  {
-  return this.trimmedStrokes
+  //return this.trimmedStrokes
+  return this.strokes
 }
 
 Kanji.prototype.getDimensions = function () {
-  let maxX = 0
+  return this.originalDimensions
+  
+  /*let maxX = 0
   let maxY = 0
   this.trimmedStrokes.forEach(stroke => {
     stroke.forEach(point => {
@@ -49,7 +53,7 @@ Kanji.prototype.getDimensions = function () {
   return {
     width: maxX,
     height: maxY
-  }
+  }*/
 }
 
 Kanji.prototype.getXml = function (width, height, guideStrokeColor) {
@@ -58,16 +62,16 @@ Kanji.prototype.getXml = function (width, height, guideStrokeColor) {
 }
 
 Kanji.prototype.getScaledStrokes = function (width, height) {
-  let scaledStrokes = []
+  // TODO - Implement a better deep clone strategy. This is totally bad.
+  let scaledStrokes = JSON.parse(JSON.stringify(this.strokes))
+
   let dimensions = this.getDimensions()
-  this.trimmedStrokes.forEach((stroke, strokeIndex) => {
-    scaledStrokes[strokeIndex] = this.trimmedStrokes[strokeIndex].slice(0)
+  scaledStrokes.forEach((stroke) => {
     stroke.forEach((point, pointIndex) => {
-      scaledStrokes[strokeIndex][pointIndex].x *= width / dimensions.width
-      scaledStrokes[strokeIndex][pointIndex].y *= height / dimensions.height
+      stroke[pointIndex].x *= width / dimensions.width
+      stroke[pointIndex].y *= height / dimensions.height
     })
   })
-
   return scaledStrokes
 }
 
