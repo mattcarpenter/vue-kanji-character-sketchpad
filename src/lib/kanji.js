@@ -102,7 +102,9 @@ Kanji.prototype.compareWithStrokes = function(otherStrokes, sketchpadWidth, sket
 
   return {
     isMatch: strokesMatched === strokes.length,
-    isCorrectStrokeOrder: checkStrokeOrder(results)
+    isCorrectStrokeOrder: checkStrokeOrder(results),
+    actualStrokesCount: strokes.length,
+    sketchStrokesCount: otherStrokes.length
   }
 }
 
