@@ -4,7 +4,7 @@ const turf = require('turf')
 
 // i.e.: hausdorff distance of 75px tolerated for every 500px of sketchpad width
 const TOLERANCE_WIDTH = 500
-const TOLERANCE = 100
+const TOLERANCE = 75
 
 export const fromXml = (xml) => {
   return new Kanji(xml)
@@ -119,7 +119,8 @@ Kanji.prototype.compareWithStrokes = function(otherStrokes, sketchpadWidth, sket
   let strokesMatched = 0
   const results = []
 
-  strokes.forEach((stroke, strokeIndex) => {
+  let strokeDebugResults = []
+  strokes.forEach((stroke, strokeIndex) => {  
     otherStrokes.forEach((otherStroke, otherStrokeIndex) => {
       let vector2D = { x: strokesCenter.x - otherStrokesCenter.x, y: strokesCenter.y - otherStrokesCenter.y }
       
@@ -130,12 +131,20 @@ Kanji.prototype.compareWithStrokes = function(otherStrokes, sketchpadWidth, sket
       let h2 = hausdorff(otherStrokes[otherStrokeIndex], strokes[strokeIndex], { x: -1 * vector2D.x, y: -1 * vector2D.y })
       let accuracy = Math.max(h1, h2) * TOLERANCE_WIDTH / sketchpadWidth
 
+      strokeDebugResults.push({
+        h1,
+        h2,
+        accuracy
+      })
+
       if (accuracy < TOLERANCE) {
         results[strokeIndex] = otherStrokeIndex
         strokesMatched++
       }
     })
   })
+
+  console.log(strokeDebugResults) //eslint-disable-line
 
   return {
     isMatch: strokesMatched === strokes.length,
@@ -181,6 +190,8 @@ Kanji.prototype.compareWithStrokesScaleInvariant = function(sketchStrokes, sketc
   // Get actual strokes and scale them to the dimensions of our trimmed sketch strokes
   const strokes = this.getScaledTrimmedStrokes(maxX, maxY)
 
+  console.log(strokes, otherStrokes)//eslint-disable-line
+
   let strokesMatched = 0
   const results = []
 
@@ -200,7 +211,7 @@ Kanji.prototype.compareWithStrokesScaleInvariant = function(sketchStrokes, sketc
   })
 
   return {
-    isMatch: strokesMatched === strokes.length,
+    isMatch: strokesMatched >= strokes.length && strokes.length === otherStrokes.length,
     isCorrectStrokeOrder: checkStrokeOrder(results),
     actualStrokesCount: strokes.length,
     sketchStrokesCount: otherStrokes.length
