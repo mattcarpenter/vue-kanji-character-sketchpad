@@ -4,7 +4,7 @@ const turf = require('turf')
 
 // i.e.: hausdorff distance of 75px tolerated for every 500px of sketchpad width
 const TOLERANCE_WIDTH = 500
-const TOLERANCE = 75
+const TOLERANCE = 100
 
 export const fromXml = (xml) => {
   return new Kanji(xml)
