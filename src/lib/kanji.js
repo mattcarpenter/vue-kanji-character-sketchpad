@@ -75,6 +75,43 @@ Kanji.prototype.getScaledStrokes = function (width, height) {
   return scaledStrokes
 }
 
+Kanji.prototype.getScaledTrimmedStrokes = function(width, height) {
+  let strokes = JSON.parse(JSON.stringify(this.strokes))
+
+  // Determine margins
+  let minX = null
+  let minY = null
+  strokes.forEach(stroke => {
+    stroke.forEach(point => {
+      minX = minX === null ? point.x : Math.min(point.x, minX)
+      minY = minY === null ? point.y : Math.min(point.y, minY)
+    })
+  })
+
+  // Trim
+  let maxX = 0
+  let maxY = 0
+  strokes.forEach(stroke => {
+    stroke.forEach(point => {
+      point.x -= minX
+      point.y -= minY
+
+      maxX = Math.max(point.x, maxX)
+      maxY = Math.max(point.y, maxY)
+    })
+  })
+
+  // Scale
+  strokes.forEach(stroke => {
+    stroke.forEach(point => {
+      point.x *= width / maxX
+      point.y *= height / maxY
+    })
+  })
+
+  return strokes
+}
+
 Kanji.prototype.compareWithStrokes = function(otherStrokes, sketchpadWidth, sketchpadHeight) {
   const strokes = this.getScaledStrokes(sketchpadWidth, sketchpadHeight)
   const strokesCenter = getCenter(strokes)
@@ -88,6 +125,68 @@ Kanji.prototype.compareWithStrokes = function(otherStrokes, sketchpadWidth, sket
       
       // todo - maybe not apply vector2d when only some strokes have been provided?
       vector2D = { x: 0, y: 0 }
+      
+      let h1 = hausdorff(strokes[strokeIndex], otherStrokes[otherStrokeIndex], vector2D)
+      let h2 = hausdorff(otherStrokes[otherStrokeIndex], strokes[strokeIndex], { x: -1 * vector2D.x, y: -1 * vector2D.y })
+      let accuracy = Math.max(h1, h2) * TOLERANCE_WIDTH / sketchpadWidth
+
+      if (accuracy < TOLERANCE) {
+        results[strokeIndex] = otherStrokeIndex
+        strokesMatched++
+      }
+    })
+  })
+
+  return {
+    isMatch: strokesMatched === strokes.length,
+    isCorrectStrokeOrder: checkStrokeOrder(results),
+    actualStrokesCount: strokes.length,
+    sketchStrokesCount: otherStrokes.length
+  }
+}
+
+Kanji.prototype.compareWithStrokesScaleInvariant = function(sketchStrokes, sketchpadWidth) {
+  // Trim other strokes and get dimensions
+
+  // TODO: Do something else. this is BAD
+  let otherStrokes = JSON.parse(JSON.stringify(sketchStrokes))
+  
+  // First get top and left margins
+  let minX = null
+  let minY = null
+  otherStrokes.forEach(stroke => {
+    stroke.forEach(point => {
+      minX = minX === null ? point.x : Math.min(point.x, minX)
+      minY = minY === null ? point.y : Math.min(point.y, minY)
+    })
+  })
+
+  // Trim and determine dimensions
+  let maxX = 0
+  let maxY = 0
+  otherStrokes.forEach(stroke => {
+    stroke.forEach(point => {
+      point.x -= minX
+      point.y -= minY
+
+      maxX = Math.max(point.x, maxX)
+      maxY = Math.max(point.y, maxY)
+    })
+  })
+
+  // Scale actual strokes to match other strokes
+
+  //const strokes = this.getScaledStrokes(sketchpadWidth, sketchpadHeight)
+
+  // Get actual strokes and scale them to the dimensions of our trimmed sketch strokes
+  const strokes = this.getScaledTrimmedStrokes(maxX, maxY)
+
+  let strokesMatched = 0
+  const results = []
+
+  strokes.forEach((stroke, strokeIndex) => {
+    otherStrokes.forEach((otherStroke, otherStrokeIndex) => {  
+      let vector2D = { x: 0, y: 0 }
       
       let h1 = hausdorff(strokes[strokeIndex], otherStrokes[otherStrokeIndex], vector2D)
       let h2 = hausdorff(otherStrokes[otherStrokeIndex], strokes[strokeIndex], { x: -1 * vector2D.x, y: -1 * vector2D.y })

@@ -79,7 +79,8 @@ export default {
         return
       }
 
-      this.$emit('stroke', this.kanji.compareWithStrokes(sketchPaths, this.width, this.height))
+      this.$emit('stroke', this.kanji.compareWithStrokesScaleInvariant(sketchPaths, this.width))
+      //this.$emit('stroke', this.kanji.compareWithStrokes(sketchPaths, this.width, this.height))
     },
     animateGuideStrokes() {
       let timeOffset = 0;
