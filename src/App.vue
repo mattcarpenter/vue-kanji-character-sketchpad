@@ -6,7 +6,7 @@
                 :width="dimensions.width"
                 :height="dimensions.height"
                 :key="dimensions.width"
-                size="20"
+                :size="sketchStrokeSize"
                 :color="strokeColor"></svg-sketch>
     <ul class="sketchpad-guide-stroke-labels" v-bind:style="{display: showStrokeNumbers ? 'block' : 'none'}">
       <li v-for="(value, index) in strokes"
@@ -66,6 +66,11 @@ export default {
       type: String,
       required: false,
       default: '#444'
+    },
+    sketchStrokeSize: {
+      type: Number,
+      required: false,
+      default: 20
     }
   },
   methods: {
